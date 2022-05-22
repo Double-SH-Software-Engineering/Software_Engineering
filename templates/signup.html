@@ -1,0 +1,36 @@
+{% extends 'Header.html'%}
+
+{% block content %}
+<div class="container justify-content-start" style="display: flex;
+   align-items: center;
+   justify-content: space-around;
+   margin-left: auto;
+   margin-right: auto;
+   margin-top: 50px;
+   position: relative">
+    {%with messages = get_flashed_messages()%}
+        {%if messages %}
+            <script type="text/javascript">
+                alert("{{messages[-1]}}");
+            </script>
+        {%endif%}
+    {%endwith%}
+    <form method="get" id="signup" action="{{url_for('signup_submit')}}">
+        <div class="form-group">
+            <label for="newId">Email address</label>
+                <input type="text" class="form-control" id="newId" name = "newId" aria-describedby="emailHelp">
+                <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+        </div>
+        <div class="form-group">
+            <label for="newPw">Password</label>
+            <input type="password" class="form-control" id="newPw" name="newPw">
+            <small id="pwHelp" class="form-text text-muted">4글자 이상으로 입력해주세요</small>
+        </div>
+        <div class="form-group">
+            <label for="confirmPw">Password Confirm</label>
+            <input type="password" class="form-control" id="confirmPw" name = "confirmPw">
+        </div>
+        <button type="submit" class="btn btn-light" style="background:#FFD18D;">Submit</button>
+    </form>
+        </div>
+{% endblock %}
