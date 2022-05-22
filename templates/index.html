@@ -120,21 +120,37 @@
    </div>
 
    <div class="index_mid_right" style="width: 20%; position: absolute; top:0; right:0;">
-      <form>
+      {%if login == True %}
+       <div class="card" style="width: 18rem; background:#FFD18D;">
+            <div class="card-body" style="text-align:center; margin-left: auto; margin-right: auto;">
+                <h3 class="card-title"> 사용자 : {{username}}</h3>
+                <a href="{{ url_for('logout')}}" class="btn btn-dark"
+                   style="background-color:#FFb74D;border:0; margin-top: 10px">Sign-out</a>
+            </div>
+       </div>
+      {%else%}
+       {%with messages = get_flashed_messages()%}
+            {%if messages %}
+                <script type="text/javascript">
+                    alert("{{messages[-1]}}");
+                </script>
+            {%endif%}
+       {%endwith%}
+      <form method="get" id="login" action="{{url_for('login')}}">
         <div class="form-group">
-          <label for="exampleInputEmail1">ID</label>
-          <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+          <label for="loginId">ID</label>
+          <input type="id" class="form-control" id="loginId" name="loginId" aria-describedby="emailHelp">
         </div>
         <div class="form-group" style="margin-bottom:20px;">
-          <label for="exampleInputPassword1">Password</label>
-          <input type="password" class="form-control" id="exampleInputPassword1">
+          <label for="loginPw">Password</label>
+          <input type="password" class="form-control" id="loginPw" name="loginPw">
         </div>
         <div style="display: flex; align-items: center; justify-content: space-around;margin-left: auto;margin-right: auto;">
-            <button type="submit" class="btn btn-light" style="background:#FFD18D;">Sign-in</button>
-            <button type="submit" class="btn btn-light" style="background:#FFD18D;">Sign-up</button>
+            <button type="submit" class="btn btn-dark" style="background:#FFD18D; border:0;">Sign-in</button>
+            <a href="/signup" class="btn btn-dark" style="background:#FFD18D; border:0;">Sign-up</a>
         </div>
-
       </form>
+      {%endif%}
     </div>
  </div>
 
