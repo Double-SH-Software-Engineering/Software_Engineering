@@ -6,7 +6,7 @@ class Database:
             host='localhost',
             port=3306,
             user='root',
-            password='!9535010a',
+            password='dgu1234!',
             db='SEDB',
             charset='utf8'
         )
@@ -60,8 +60,13 @@ class Database:
     def write_post(self, id_, contents,):
         pass
 
-    def post_list(self):
-        pass
+    def product_list(self):
+        cursors = self.db.cursor()
+        sql = "select product_id, product_name,user_ID, register_date from product"
+        cursors.execute(sql)
+        product = list(cursors.fetchall())
+
+        return product
 
     def post_detail(self, pid):
         pass
