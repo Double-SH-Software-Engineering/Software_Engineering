@@ -14,10 +14,11 @@ app.secret_key = "shinheejun"
 
 @app.route('/',methods=["get"])
 def index():
+    item = DB.product_list()
     if "userID" in session:
-        return render_template('index.html',username = session.get("userID"), login = True)
+        return render_template('index.html',username = session.get("userID"), login = True, result = item)
     else:
-        return render_template('index.html',login = False)
+        return render_template('index.html',login = False, result = item)
 
 
 @app.route('/login', methods=["get"])
@@ -105,6 +106,7 @@ def product_detail(p_id):
 
     
     
+
 
 
 
