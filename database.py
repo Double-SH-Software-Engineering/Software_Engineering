@@ -6,7 +6,7 @@ class Database:
             host='localhost',
             port=3306,
             user='root',
-            password='--------',
+            password='!9535010a',
             db='SEDB',
             charset='utf8'
         )
