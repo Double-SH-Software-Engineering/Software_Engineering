@@ -10,6 +10,8 @@ app.secret_key = "shinheejun"
 
 
 
+
+
 @app.route('/',methods=["get"])
 def index():
     if "userID" in session:
@@ -47,7 +49,6 @@ def logout():
 def signup():
     return render_template('signup.html')
 
-
 @app.route('/signup_submit',methods=["get"])
 def signup_submit():
     new_id = request.args.get("newId")
@@ -72,18 +73,43 @@ def signup_submit():
 
 
 
-
-@app.route('/product/before/<int:p_id>')
+    
+@app.route('/product/login/<int:p_id>',methods=["get"])
 def product_login(p_id):
+    
+    _id_ = request.args.get("loginId")
+    _pw_ = request.args.get("loginPw")
+    print(_id_,_pw_)
+    if _id_=="":
+        flash("계정을 입력해주세요")
+        return redirect("/product/" + str(p_id))
+
+    cond = DB.login(_id_,_pw_)
+    if cond :
+        print(_id_,_pw_)
+        session["userID"] = _id_
+        return redirect("/product/" + str(p_id))
+    else:
+        flash("계정이 없거나 비밀번호가 틀립니다")
+        return redirect("/product/" + str(p_id))
+
+
+@app.route('/product/<int:p_id>')
+def product_detail(p_id):
+    
     product = DB.product_detail(p_id)
-    return render_template('Product_login.html',result=product)
+    if "userID" in session:
+        return render_template('Product.html',result=product,username = session.get("userID"), login = True)
+    else:
+        return render_template('Product.html',result=product, login = False)
+
+    
+    
 
 
 
-@app.route('/product/after/<int:p_id>')
-def product(p_id):
-    product = DB.product_detail(p_id)
-    return render_template('Product.html',result=product)
+
+
 
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5001, debug=True)

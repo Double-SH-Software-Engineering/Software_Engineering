@@ -6,7 +6,7 @@ class Database:
             host='localhost',
             port=3306,
             user='root',
-            password='xxxxxxxx',
+            password='!9535010a',
             db='SEDB',
             charset='utf8'
         )
@@ -14,7 +14,7 @@ class Database:
 
     def login(self, id_, pwd):
         cursors = self.db.cursor()
-        sql = """select ID, Password_ from Customer"""
+        sql = """select user_ID, Password_ from Customer"""
         cursors.execute(sql)
         item = list(cursors.fetchall())
         self.db.commit()
@@ -32,7 +32,7 @@ class Database:
 
     def signup(self, id_, pwd):
         cursors = self.db.cursor()
-        sql = """select ID from Customer"""
+        sql = """select user_ID from Customer"""
         cursors.execute(sql)
         item = list(cursors.fetchall())
         self.db.commit()
