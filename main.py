@@ -1,42 +1,88 @@
-from flask import Flask, render_template
+from flask import Flask, session, render_template, redirect, request, url_for, flash
 from datetime import datetime
-import mysql.connector
+from database import Database
 
-cnx = mysql.connector.connect(user='root',password='!9535010a',host='localhost')
-cursor = cnx.cursor()
-cursor.execute("USE market")
-
-def product_detail(product_id):
-    product = []
-    query = "select * from product where product_id=" + str(product_id) 
-    cursor.execute(query)
-    for c in cursor:
-        product = c
-    return product
-        
+DB = Database()
 
 app = Flask(__name__)
+app.secret_key = "shinheejun"
 
 
 
-@app.route('/')
-@app.route('/index')
+
+@app.route('/',methods=["get"])
 def index():
-    return render_template('index.html')
+    if "userID" in session:
+        return render_template('index.html',username = session.get("userID"), login = True)
+    else:
+        return render_template('index.html',login = False)
 
 
-@app.route('/about')
-def about():
-    return render_template('about.html')
+@app.route('/login', methods=["get"])
+def login():
+    _id_ = request.args.get("loginId")
+    _pw_ = request.args.get("loginPw")
 
-@app.route('/product/before/<int:id>')
-def product_login(id):
-    product = product_detail(id)
+    if _id_=="":
+        flash("계정을 입력해주세요")
+        return redirect(url_for("index"))
+
+    cond = DB.login(_id_,_pw_)
+    if cond :
+        print(_id_,_pw_)
+        session["userID"] = _id_
+        return redirect(url_for("index"))
+    else:
+        flash("계정이 없거나 비밀번호가 틀립니다")
+        return redirect(url_for("index"))
+
+
+@app.route('/logout')
+def logout():
+    session.pop("userID")
+    return redirect(url_for("index"))
+
+
+@app.route('/signup')
+def signup():
+    return render_template('signup.html')
+
+
+@app.route('/signup_submit',methods=["get"])
+def signup_submit():
+    new_id = request.args.get("newId")
+    new_pw = request.args.get("newPw")
+    con_pw = request.args.get("confirmPw")
+
+    if new_pw != con_pw:
+        flash("비밀번호를 재확인 바랍니다")
+        return redirect(url_for("signup"))
+    if len(new_pw) < 4:
+        flash("비밀번호가 너무 짧습니다")
+        return redirect(url_for("signup"))
+
+    if DB.signup(new_id,new_pw):
+        flash("회원가입에 성공했습니다. 로그인 해주세요")
+        return redirect(url_for("index"))
+    else:
+        flash("중복된 ID 입니다 다시 입력해주세요")
+        return redirect(url_for("signup"))
+
+    return redirect(url_for("index"))
+
+
+
+
+@app.route('/product/before/<int:p_id>')
+def product_login(p_id):
+    product = DB.product_detail(p_id)
     return render_template('Product_login.html',result=product)
 
-@app.route('/product/after/<int:id>')
-def product(id):
-    product = product_detail(id)
+
+
+@app.route('/product/after/<int:p_id>')
+def product(p_id):
+    product = DB.product_detail(p_id)
     return render_template('Product.html',result=product)
 
 if __name__ == '__main__':
