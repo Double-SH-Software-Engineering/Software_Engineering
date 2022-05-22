@@ -1,10 +1,12 @@
 from flask import Flask, session, render_template, redirect, request, url_for, flash
+from datetime import datetime
 from database import Database
 
 DB = Database()
 
 app = Flask(__name__)
 app.secret_key = "shinheejun"
+
 
 
 
@@ -34,15 +36,17 @@ def login():
         flash("계정이 없거나 비밀번호가 틀립니다")
         return redirect(url_for("index"))
 
-@app.route('/logout')
 
+@app.route('/logout')
 def logout():
     session.pop("userID")
     return redirect(url_for("index"))
 
+
 @app.route('/signup')
 def signup():
     return render_template('signup.html')
+
 
 @app.route('/signup_submit',methods=["get"])
 def signup_submit():
@@ -66,5 +70,23 @@ def signup_submit():
 
     return redirect(url_for("index"))
 
+
+
+
+@app.route('/product/before/<int:p_id>')
+def product_login(p_id):
+    product = DB.product_detail(p_id)
+    return render_template('Product_login.html',result=product)
+
+
+
+@app.route('/product/after/<int:p_id>')
+def product(p_id):
+    product = DB.product_detail(p_id)
+    return render_template('Product.html',result=product)
+
 if __name__ == '__main__':
-    app.run('0.0.0.0', port=5000, debug=True)
+    app.run('0.0.0.0', port=5001, debug=True)
+
+
+
