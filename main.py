@@ -104,7 +104,19 @@ def product_detail(p_id):
     else:
         return render_template('Product.html',result=product, login = False)
 
-    
+@app.route('/profile')
+def profile():
+    if "userID" in session:
+        username = session.get("userID")
+        user_item = DB.profile_item(username)
+        pro_item = []
+        for i in user_item:
+            pro_item.append(i[:-1])
+
+        return render_template('profile.html', login = True, result = pro_item, username = session.get("userID"))
+    else:
+        flash("로그인을 먼저해주세요")
+        return redirect(url_for("index"))
     
 
 

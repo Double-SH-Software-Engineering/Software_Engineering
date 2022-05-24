@@ -6,7 +6,7 @@ class Database:
             host='localhost',
             port=3306,
             user='root',
-            password='!9535010a',
+            password='dgu1234!',
             db='SEDB',
             charset='utf8'
         )
@@ -62,7 +62,7 @@ class Database:
 
     def product_list(self):
         cursors = self.db.cursor()
-        sql = "select product_id, product_name,user_ID, register_date from product"
+        sql = "select product_id, product_name,user_ID, register_date,soldout from product"
         cursors.execute(sql)
         product = list(cursors.fetchall())
 
@@ -73,3 +73,17 @@ class Database:
 
     def get_user(self, uid):
         pass
+
+    def profile_item(self, uid):
+        cursors = self.db.cursor()
+        sql = "select product_id, product_name, register_date,soldout from product where user_ID = %s"
+
+        cursors.execute(sql,uid)
+        product_t = list(cursors.fetchall())
+        product = []
+        for i in product_t:
+            i = list(i)
+            product.append(i)
+
+        return product
+
