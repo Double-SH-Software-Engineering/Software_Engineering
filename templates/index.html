@@ -17,16 +17,22 @@
            <th class = "name_col" scope="col">상품명</th>
            <th class = "uploader_col" scope="col">등록자</th>
            <th class= "date_col" scope="col">등록날짜</th>
+           <th class= "sold_col" scope="col">판매여부</th>
          </tr>
        </thead>
        <tbody>
          {% for item in result %}
 		       <tr style = "cursor:pointer;" onClick = " location.href='/product/{{item[0]}}' ">
-				    {% for i in item %}
+				    {% for i in item[0:4] %}
 			        <td>
 				        {{i}}
 			        </td>
 				    {% endfor %}
+                   <td>
+                       {% if item[4] == 1 %}
+                            <span class="badge badge-danger">Sold out</span>
+                       {% endif %}
+                   </td>
 		       </tr>
 			   {% endfor %}
         </tbody>
