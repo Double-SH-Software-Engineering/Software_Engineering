@@ -1,4 +1,8 @@
+from datetime import datetime
+from sqlite3 import Cursor
+import sys
 import pymysql
+
 
 class Database:
     def __init__(self):
@@ -56,10 +60,6 @@ class Database:
         
         return product
 
-
-    def write_post(self, id_, contents,):
-        pass
-
     def product_list(self):
         cursors = self.db.cursor()
         sql = "select product_id, product_name,user_ID, register_date,soldout from product"
@@ -68,11 +68,6 @@ class Database:
 
         return product
 
-    def post_detail(self, pid):
-        pass
-
-    def get_user(self, uid):
-        pass
 
     def profile_item(self, uid):
         cursors = self.db.cursor()
@@ -86,4 +81,72 @@ class Database:
             product.append(i)
 
         return product
+    
+    def upload_info(self, uid, pname, price, keyword, descript, soldout):
+        now_date = datetime.now().date()
+        r_date = now_date.strftime("%Y-%m-%d")
+        
+        cursors = self.db.cursor()
+        sql = "insert into product(user_ID, product_name, price, register_date, keyword, description_, soldout) values ( %s, %s, %s, %s, %s, %s, %s)"        
+        cursors.execute(sql, (uid, pname, price, r_date, keyword, descript, soldout))
+        cursors.fetchall()
+        self.db.commit()
+        pid = cursors.lastrowid
+        
+        return str(pid)
+        
+   
+        
+    def upload_url(self, pid, purl):
+        cursors = self.db.cursor()
+        sql = "insert into Product_image values (%s, %s)"
+        cursors.execute(sql, (pid, purl))
+        cursors.fetchall()
+        self.db.commit()
+        
+    def show_image(self,pid):
+        cursors = self.db.cursor()
+        sql = "select image from product_image where product_id = %s"
+        cursors.execute(sql,pid)
+        p_images = list(cursors.fetchall())
+        for i in range(len(p_images)):
+            p_images[i] = p_images[i][0]
+        
+        
+        return p_images
+    
+    def search_product(self, pid):
+        
+        cursors = self.db.cursor()
+        sql = "select product_name, description_ , keyword, price, soldout from product where product_id = %s"
+                
+        cursors.execute(sql, pid)
+        product = list(cursors.fetchall())
+        product = product[0]
+        product = list(product)
+        product.append(pid)
+        
+        
+        
+        return product
+    
+    def user_certificate(self,pid):
+        cursors = self.db.cursor()
+        sql = "select user_ID from product where product_id = %s"
+        cursors.execute(sql,pid)
+        user = list(cursors.fetchall())
+        user = user[0][0]
+        return user
+    
+    def modify_sold(self, pid, soldoption):
+        cursors = self.db.cursor()
+        sql = "update product set soldout = %s where product_ID = %s;"
+        cursors.execute(sql,(soldoption,pid))
+        cursors.fetchall()
+        self.db.commit()
+        
+
+
+    
+    
 
