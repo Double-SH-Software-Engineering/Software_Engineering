@@ -1,28 +1,31 @@
 import pymysql
 from datetime import datetime
 
-DB = pymysql.connect(
-            host='localhost',
-            port=3306,
-            user='root',
-            password='-',
-            db='SEDB',
-            charset='utf8'
-        )
+kwargs = {'host':'localhost', 'port':3306,'user':'root','password':'!9535010a','db':'SEDB', 'charset':'utf8'}
 
-product = []
-uid = 'heejun'
+# DB = pymysql.connect(
+#             host='localhost',
+#             port=3306,
+#             user='root',
+#             password='!9535010a',
+#             db='SEDB',
+#             charset='utf8'
+#         )
+
+DB = pymysql.connect(**kwargs)
+
+
+
+pid = 10
 cursors = DB.cursor()
-sql = "select product_id, product_name,user_ID,register_date,soldout from product where user_ID = %s"
-cursors.execute(sql, uid)
-item_t = list(cursors.fetchall())
-item = []
-for i in item_t:
-    i = list(i)
-    item.append(i)
-print(item)
-pro_item = []
-for i in item:
-    pro_item.append(i[:-1])
-
-print(pro_item)
+sql = '''select product_name, description_, keyword, price, soldout
+    from product
+    where product_id = ''' + str(pid)
+                
+cursors.execute(sql)
+product = list(cursors.fetchall())
+product = product[0]
+product = list(product)
+product[3] = str(product[3])
+        
+print(product)

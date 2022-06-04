@@ -1,0 +1,140 @@
+{% extends 'Header.html'%}
+
+{% block content %}
+  <div class="container justify-content-end" style="display: flex;
+   align-items: center;
+   justify-content: space-around;
+   margin-left: auto;
+   margin-right: auto;
+   margin-top: 50px;
+   position: relative">
+    <div class="index_mid_left" style="width: 60%; position: absolute; top:0; left:0;">
+        <div class="container" style="margin-bottom:20px; display: flex; justify-content: space-between;align-items: center;">
+            <h3>상품등록 및 수정</h1>
+        </div>
+        <div class="container">
+            <form action = "http://127.0.0.1:5001/uploader" method = "POST" enctype="multipart/form-data">
+            
+            
+                <br>
+
+            
+
+                <div class ="row">
+                
+                    <div class="col-3">
+                        <h4 style="background:#FFD18D;text-align:center;">상품 이름</h4>
+                    </div>
+
+                    <div class="col-9">
+                        
+                        <input type="text" style="width:100%" name="p_name" value = {{result[0]}} disabled />
+                    
+                    </div>
+                </div>
+                <br>
+                <div class ="row" >
+                
+                    <div class="col-3">
+                        <h4 style="background:#FFD18D;text-align:center;">상품 설명</h4>
+                    </div>
+
+                    <div class="col-9">
+                    
+                        <textarea style="width:100%;height:100pt;word-break:break-all;word-wrap:break-word;" name="p_descript" disabled >{{result[1]}}</textarea>
+                    
+                    </div>
+                </div>
+                <br>
+                <div class ="row">
+                
+                    <div class="col-3">
+                        <h4 style="background:#FFD18D;text-align:center;">키워드</h4>
+                    </div>
+
+                    <div class="col-9">
+                    
+                        <input type="text" style="width:100%" name="p_keyword" value = {{result[2]}} disabled />
+                        
+                    </div>
+                </div>
+                <br>
+                <div class ="row">
+                
+                    <div class="col-3">
+                        <h4 style="background:#FFD18D;text-align:center;">가격</h4>
+                    </div>
+
+                    <div class="col-9">
+                    
+                        <input type="number" style="width:100%" name="p_price" value = {{result[3]}} disabled />
+                        
+                    </div>
+                </div>
+                <br>
+                <div class ="row">
+                
+                    <div class="col-3">
+                        <h4 style="background:#FFD18D;text-align:center;">판매 여부</h4>
+                    </div>
+
+                    <div class="col-9">
+                    
+                        <div class="row">
+                            {% if result[4] == 0 %}
+                            <div class="col-3">
+                                <input  type="radio" name="isSoldOption" id="btn_NotSold" value="0" checked="checked">
+                                <label  for="btn_NotSold"><h5>Not Sold</h5></label>
+                            </div>
+                            <div class="col-3">
+                                <input  type="radio" name="isSoldOption" id="btn_Sold" value="1">
+                                <label  for="btn_Sold"><h5>Sold</h5></label>
+                            </div>
+                            {% elif result[4] == 1%}
+                            <div class="col-3">
+                                <input  type="radio" name="isSoldOption" id="btn_NotSold" value="0" >
+                                <label  for="btn_NotSold"><h5>Not Sold</h5></label>
+                            </div>
+                            <div class="col-3">
+                                <input  type="radio" name="isSoldOption" id="btn_Sold" value="1" checked="checked">
+                                <label  for="btn_Sold"><h5>Sold</h5></label>
+                            </div>
+                            {% endif %}
+                        </div>
+                    
+                    </div>
+                </div>
+                <input type="submit" name="submit" class="btn float-right" style="background:#FFb74D"/>
+            
+            </form>
+
+        </div>
+
+    </div>
+
+    {% if login == True%}
+    <div class="index_mid_right" style="width: 20%; position: absolute; top:0; right:0; background:#FFEACC">
+
+      <div style="margin-top:40px;margin-bottom:20px;">
+
+        <h5 style = "text-align:center;">사용자 : {{username}}</h5>
+      </div>
+      <form>
+        <div style="display: flex; align-items: center; justify-content: space-around;margin-left: auto;margin-right: auto;">
+           <a href="{{ url_for('logout')}}" class="btn btn-light" style="background-color:#FFb74D;border:0; margin-top: 10px">Sign-out</a>
+        </div>
+        <br>
+      </form>
+    </div>
+    {% else %}
+      {%with messages = get_flashed_messages()%}
+          {%if messages %}
+              <script type="text/javascript">
+                alert("{{messages[-1]}}");
+              </script>
+            {%endif%}
+      {%endwith%}
+    {%endif%}
+
+ </div>
+{% endblock %}
