@@ -72,7 +72,6 @@ def signup_submit():
         flash("중복된 ID 입니다 다시 입력해주세요")
         return redirect(url_for("signup"))
 
-    return redirect(url_for("index"))
 
 
 
@@ -140,12 +139,10 @@ def uploader():
     P_keyword = request.form['p_keyword']
     P_desc = request.form['p_descript']
         
-    soldoption = request.form["isSoldOption"]
-        
-    if "0" in soldoption:
-        P_soldout = 0
-    elif "1" in soldoption:
-        P_soldout = 1
+    P_soldout = request.form["isSoldOption"]
+    
+
+
             
     pid = DB.upload_info(username, P_name, P_price, P_keyword, P_desc, P_soldout)
         
@@ -158,16 +155,36 @@ def uploader():
         DB.upload_url(pid, fileURI[1:])
     
     return redirect(url_for("profile"))
+
+@app.route('/modifing/<int:p_id>')
+def modifing(p_id):
+    return redirect(url_for('modify', p_id = p_id))
             
 @app.route('/modify/<int:p_id>')
 def modify(p_id):
     
-    product = DB.search_product(p_id) 
-    # result = ["상품이름","상품설명","키워드","1234567", 0]
     
-    return render_template("modify.html", result = )
+    p_five = DB.search_product(p_id)
+    app.logger.info(p_five)
+    user = DB.user_certificate(p_id)
+    if "userID" in session:
+        if session.get("userID") == user:
+            return render_template('modify.html',result=p_five, username = session.get("userID"), login = True)
+        else:
+            return redirect(url_for("index"))
+    else:
+        return redirect(url_for("index"))
+    
+@app.route('/modifier/<int:p_id>/')
+def modifier(p_id):
+    soldoption = request.args.get("isSoldOption")
+    app.logger.info(soldoption)
+    DB.modify_sold(p_id,soldoption)
+    
+    return redirect(url_for('profile'))
 
-
+  
+ 
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5001, debug=True)
     

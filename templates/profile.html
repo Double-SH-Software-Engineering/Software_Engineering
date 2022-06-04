@@ -31,7 +31,7 @@
 			        </td>
 				    {% endfor %}
               <td>
-                <a href="{{ url_for('modify',p_id = item[0])}}" class="btn btn-light" style="background-color:#FFb74D;border:0;">수정</a>
+                <a href="{{url_for("modifing", p_id = item[0])}}" class="btn btn-light" style="background-color:#FFb74D;border:0;">수정</a>
               </td>
 		       </tr>
 			   {% endfor %}

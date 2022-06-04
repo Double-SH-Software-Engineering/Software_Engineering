@@ -1,4 +1,5 @@
 from datetime import datetime
+from sqlite3 import Cursor
 import sys
 import pymysql
 
@@ -9,7 +10,7 @@ class Database:
             host='localhost',
             port=3306,
             user='root',
-            password='!9535010a',
+            password='-',
             db='SEDB',
             charset='utf8'
         )
@@ -105,8 +106,8 @@ class Database:
         
     def show_image(self,pid):
         cursors = self.db.cursor()
-        sql = "select image from product_image where product_id = " + str(pid)
-        cursors.execute(sql)
+        sql = "select image from product_image where product_id = %s"
+        cursors.execute(sql,pid)
         p_images = list(cursors.fetchall())
         for i in range(len(p_images)):
             p_images[i] = p_images[i][0]
@@ -117,16 +118,32 @@ class Database:
     def search_product(self, pid):
         
         cursors = self.db.cursor()
-        sql = "select product_name, price, user_ID, register_date, keyword, description_ from product where product_id = " + str(pid)
+        sql = "select product_name, description_ , keyword, price, soldout from product where product_id = %s"
                 
-        cursors.execute(sql)
+        cursors.execute(sql, pid)
         product = list(cursors.fetchall())
-        for c in cursors:
-            product = c    
         product = product[0]
         product = list(product)
+        product.append(pid)
+        
+        
         
         return product
+    
+    def user_certificate(self,pid):
+        cursors = self.db.cursor()
+        sql = "select user_ID from product where product_id = %s"
+        cursors.execute(sql,pid)
+        user = list(cursors.fetchall())
+        user = user[0][0]
+        return user
+    
+    def modify_sold(self, pid, soldoption):
+        cursors = self.db.cursor()
+        sql = "update product set soldout = %s where product_ID = %s;"
+        cursors.execute(sql,(soldoption,pid))
+        cursors.fetchall()
+        self.db.commit()
         
 
 
