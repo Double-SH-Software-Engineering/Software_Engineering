@@ -17,11 +17,11 @@
           <div id="carouselExampleControlsNoTouching" class="carousel slide"  data-touch="false" data-interval="false">
             <div class="carousel-inner">
                 <div class="carousel-item active">
-                  <img src={{images[0]}} class="d-block w-100" alt="..." >
+                  <img src={{images[0]}} class="d-block w-100" style="border: 1px solid black" alt="사진이 없습니다." >
                 </div>
                 {%for i in range(1,images|length) %}
                   <div class="carousel-item">
-                    <img src={{images[i]}} class="d-block w-100" alt="..." >
+                    <img src={{images[i]}} class="d-block w-100" style="border: 1px solid black" alt="사진이 없습니다." >
                   </div>
                 {% endfor %}
               </div>
