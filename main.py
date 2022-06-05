@@ -1,3 +1,4 @@
+from distutils import file_util
 from flask import Flask, session, render_template, redirect, request, url_for, flash
 from datetime import datetime
 from database import Database
@@ -148,11 +149,15 @@ def uploader():
         
     # return pid
     files = request.files.getlist('file[]')
-
-    for f in files:
-        fileURI = './static/img/'+ secure_filename(f.filename)
-        f.save(fileURI)
-        DB.upload_url(pid, fileURI[1:])
+    if files[0].filename == '':
+        fileURI = '/static/img/default_image.png'
+        DB.upload_url(pid,fileURI)
+    else:
+        for f in files:
+            fileURI = './static/img/'+ secure_filename(f.filename)
+            f.save(fileURI)
+            DB.upload_url(pid, fileURI[1:])
+    
     
     return redirect(url_for("profile"))
 
@@ -163,7 +168,7 @@ def modifing(p_id):
 @app.route('/modify/<int:p_id>')
 def modify(p_id):
     
-    
+
     p_five = DB.search_product(p_id)
     app.logger.info(p_five)
     user = DB.user_certificate(p_id)
@@ -175,13 +180,44 @@ def modify(p_id):
     else:
         return redirect(url_for("index"))
     
-@app.route('/modifier/<int:p_id>/')
-def modifier(p_id):
-    soldoption = request.args.get("isSoldOption")
-    app.logger.info(soldoption)
-    DB.modify_sold(p_id,soldoption)
     
-    return redirect(url_for('profile'))
+@app.route('/modifier/<int:p_id>/',methods=['GET','POST'])
+def modifier(p_id):
+  
+    username = session.get("userID")  
+    P_name = request.form['p_name']
+    P_price = request.form['p_price']
+    P_keyword = request.form['p_keyword']
+    P_desc = request.form['p_descript']
+    soldoption = request.form["isSoldOption"]
+    files = request.files.getlist('file[]')
+    app.logger.info(files)
+
+    user = DB.user_certificate(p_id)
+    if username == user:  
+        if files[0].filename == '':
+            
+            DB.modify_product(p_id,P_name,P_price,P_keyword,P_desc,soldoption)  
+            return redirect(url_for('profile'))
+        
+            
+        else:
+            DB.delete_image(p_id)
+            
+            for f in files:
+                fileURI = './static/img/'+ secure_filename(f.filename)
+                f.save(fileURI)
+                DB.upload_url(p_id, fileURI[1:])
+                
+            DB.modify_product(p_id,P_name,P_price,P_keyword,P_desc,soldoption)  
+            return redirect(url_for('profile'))
+            
+    
+    else:
+        return redirect(url_for('profile'))    
+    
+    
+    
 
   
  
