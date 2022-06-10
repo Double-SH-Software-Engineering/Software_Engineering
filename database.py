@@ -151,10 +151,30 @@ class Database:
     
     def modify_sold(self, pid, soldoption):
         cursors = self.db.cursor()
-        sql = "update product set soldout = %s where product_ID = %s;"
+        sql = "update product set soldout = %s where product_ID = %s"
         cursors.execute(sql,(soldoption,pid))
         cursors.fetchall()
         self.db.commit()
+        
+        
+    def modify_product(self, pid, P_name, P_price, P_keyword, P_desc, P_soldoption):
+        cursors = self.db.cursor()
+        sql = '''update product
+                set product_name = %s, price = %s, keyword = %s, description_ = %s ,soldout = %s
+                where product_ID = %s'''
+        cursors.execute(sql,(P_name, P_price, P_keyword, P_desc, P_soldoption, pid))
+        cursors.fetchall()
+        self.db.commit()
+        
+    def delete_image(self,pid):
+        cursors= self.db.cursor()
+        sql = "delete from product_image where product_ID = %s"
+        cursors.execute(sql,pid)
+        cursors.fetchall()
+        self.db.commit()
+        
+    
+
         
 
 
