@@ -8,16 +8,14 @@ DB = pymysql.connect(
             password='-',
             db='SEDB',
             charset='utf8'
-        )
+)
+username = "1234"
 
-product = []
 cursors = DB.cursor()
-keyword = "스포츠 용품"
-sql = "select product_id, product_name,user_ID,register_date,soldout from product where keyword = %s"
-cursors.execute(sql, keyword)
-item_t = list(cursors.fetchall())
-item = []
-for i in item_t:
-    i = list(i)
-    item.append(i)
-print(item)
+
+sql = "select followee from follow where user_ID = %s"
+cursors.execute(sql,username)
+list_follow = cursors.fetchall()
+
+
+print(list_follow[1][0])
