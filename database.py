@@ -1,6 +1,4 @@
 from datetime import datetime
-from sqlite3 import Cursor
-import sys
 import pymysql
 
 
@@ -72,8 +70,21 @@ class Database:
     def profile_item(self, uid):
         cursors = self.db.cursor()
         sql = "select product_id, product_name, register_date,soldout from product where user_ID = %s"
-
         cursors.execute(sql,uid)
+
+        product_t = list(cursors.fetchall())
+        product = []
+        for i in product_t:
+            i = list(i)
+            product.append(i)
+
+        return product
+
+    def search_item(self, keyword):
+        cursors = self.db.cursor()
+        sql = "select product_id, product_name, user_ID, register_date,soldout from product where keyword = %s"
+        cursors.execute(sql,keyword)
+
         product_t = list(cursors.fetchall())
         product = []
         for i in product_t:

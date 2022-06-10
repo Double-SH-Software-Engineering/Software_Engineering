@@ -11,10 +11,6 @@ app = Flask(__name__)
 app.secret_key = "shinheejun"
 
 
-
-
-
-
 @app.route('/',methods=["get"])
 def index():
     item = DB.product_list()
@@ -74,9 +70,6 @@ def signup_submit():
         return redirect(url_for("signup"))
 
 
-
-
-    
 @app.route('/product/login/<int:p_id>',methods=["get"])
 def product_login(p_id):
     
@@ -141,10 +134,7 @@ def uploader():
     P_desc = request.form['p_descript']
         
     P_soldout = request.form["isSoldOption"]
-    
 
-
-            
     pid = DB.upload_info(username, P_name, P_price, P_keyword, P_desc, P_soldout)
         
     # return pid
@@ -167,8 +157,6 @@ def modifing(p_id):
             
 @app.route('/modify/<int:p_id>')
 def modify(p_id):
-    
-
     p_five = DB.search_product(p_id)
     app.logger.info(p_five)
     user = DB.user_certificate(p_id)
@@ -218,6 +206,22 @@ def modifier(p_id):
     
     
     
+
+@app.route('/search', methods=["get"])
+def search():
+    _keyword_ = request.args.get("Search_input")
+
+    if _keyword_ == "":
+        flash("검색어를 입력해주세요")
+        return redirect(url_for("index"))
+
+    Search_list = DB.search_item(_keyword_)
+    print(Search_list)
+
+    if "userID" in session:
+        return render_template('index.html',username = session.get("userID"), login = True, result = Search_list)
+    else:
+        return render_template('index.html',login = False, result = Search_list)
 
   
  
