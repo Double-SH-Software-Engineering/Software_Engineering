@@ -101,6 +101,10 @@ def product_login(p_id):
 def product_detail(p_id):
     
     product = DB.product_detail(p_id)
+    p_username = product[0]
+    username = session.get("userID")
+    # isfollow = DB.search_follow(username, p_username)
+    
     if "userID" in session:
         p_images = DB.show_image(p_id)
         return render_template('Product.html',result=product, username = session.get("userID"), login = True, images = p_images)
@@ -215,6 +219,16 @@ def modifier(p_id):
     
     else:
         return redirect(url_for('profile'))    
+    
+    
+@app.route('/following')
+def following():
+    follow = request.args.get('follow')
+    username = session.get("userID")
+    DB.insert_follow(username,follow)
+    
+    
+    return "test"
     
     
     

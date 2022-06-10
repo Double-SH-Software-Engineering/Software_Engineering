@@ -10,7 +10,7 @@ class Database:
             host='localhost',
             port=3306,
             user='root',
-            password='-',
+            password='!9535010a',
             db='SEDB',
             charset='utf8'
         )
@@ -159,6 +159,21 @@ class Database:
         cursors= self.db.cursor()
         sql = "delete from product_image where product_ID = %s"
         cursors.execute(sql,pid)
+        cursors.fetchall()
+        self.db.commit()
+        
+    # def search_follow(self,username,follower):
+    #     cursors = self.db.cursor()
+    #     sql = "select exists(select * from follow where user_ID = %s and followee = %s)"
+    #     cursors.execute(sql,(username,follower))
+    #     isfollow = cursors.fetchall()
+    #     isfollow = isfollow[0][0]
+    #     return isfollow
+        
+    def insert_follow(self,username,follower):
+        cursors = self.db.cursor()
+        sql = "insert into follow value (%s,%s)"
+        cursors.execute(sql,(username,follower))
         cursors.fetchall()
         self.db.commit()
         

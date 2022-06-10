@@ -54,9 +54,18 @@
                 <td>등록자 : </td>
                 <td>{{result[0]}}</td>
                 <td>
-                  <form>
-                    <button type="button" class="btn btn-light" style="background:#FFD18D;">Follow</button>
-                  </form>
+                  {% if isfollow == True %}
+                    <form action ="http://127.0.0.1:5001/unfollowing">
+                      <input type="text" name="follow" style="display:none;" value = "{{result[0]}}"/>
+                      <input type="submit" value = "Following" class="btn btn-light" style="background:#A0A0F0;"/>
+                    </form>
+                  {% else %}
+                    <form action="http://127.0.0.1:5001/following">
+                      <input type="text" name="follow" style="display:none;" value = "{{result[0]}}"/>
+                      <input type="submit" value = "Follow" class="btn btn-light" style="background:#FFD18D;"/>
+                    </form>
+                  {% endif %}
+
                 </td>
               </tr>
               <tr>
