@@ -93,6 +93,19 @@ class Database:
 
         return product
     
+    def search_byfollow(self,userID):
+        cursors =self.db.cursor()
+        sql = "select product_id, product_name, user_ID, register_date, soldout from product where user_ID = %s"
+        cursors.execute(sql,userID)
+        
+        product_t = list(cursors.fetchall())
+        product = []
+        for i in product_t:
+            i = list(i)
+            product.append(i)
+            
+        return product
+    
     def upload_info(self, uid, pname, price, keyword, descript, soldout):
         now_date = datetime.now().date()
         r_date = now_date.strftime("%Y-%m-%d")

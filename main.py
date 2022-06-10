@@ -246,6 +246,17 @@ def unfollowing():
     
     
     
+@app.route('/followitem/<userID>', methods = ["get"])
+def follow_item(userID):
+    if "userID" in session:
+        username = session.get("userID")
+        follow_list = DB.list_follow(username)
+        
+        Search_list = DB.search_byfollow(userID)
+        return render_template('index.html',username = session.get("userID"), login = True, result = Search_list,follow_list=follow_list)
+        
+    else:    
+        return redirect(url_for('index'))
 
 @app.route('/search', methods=["get"])
 def search():
