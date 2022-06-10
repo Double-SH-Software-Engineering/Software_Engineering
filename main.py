@@ -103,11 +103,12 @@ def product_detail(p_id):
     product = DB.product_detail(p_id)
     p_username = product[0]
     username = session.get("userID")
-    # isfollow = DB.search_follow(username, p_username)
+    isfollow = DB.search_follow(username, p_username)
+    # return str(isfollow)
     
     if "userID" in session:
         p_images = DB.show_image(p_id)
-        return render_template('Product.html',result=product, username = session.get("userID"), login = True, images = p_images)
+        return render_template('Product.html',result=product, username = session.get("userID"), login = True, images = p_images,isfollow = isfollow)
     else:
         return render_template('Product.html',result=product, login = False)
 
@@ -225,10 +226,23 @@ def modifier(p_id):
 def following():
     follow = request.args.get('follow')
     username = session.get("userID")
-    DB.insert_follow(username,follow)
+    pid = request.args.get("p_id")
+    if follow == username:
+        flash("본인은 follow할 수 없습니다.")
+        return redirect(url_for('product_detail',p_id = pid))
+        
+    else:
+        DB.insert_follow(username,follow)
+        flash("follow가 완료되었습니다.")
+        return redirect(url_for('product_detail',p_id = pid))
     
-    
-    return "test"
+@app.route('/unfollowing')
+def unfollowing():
+    follow = request.args.get('follow')
+    username = session.get("userID")
+    pid = request.args.get("p_id")
+    DB.delete_follow(username,follow)
+    return redirect(url_for('product_detail',p_id = pid))
     
     
     
