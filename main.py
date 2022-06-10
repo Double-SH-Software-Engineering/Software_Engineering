@@ -11,10 +11,6 @@ app = Flask(__name__)
 app.secret_key = "shinheejun"
 
 
-
-
-
-
 @app.route('/',methods=["get"])
 def index():
     item = DB.product_list()
@@ -74,9 +70,6 @@ def signup_submit():
         return redirect(url_for("signup"))
 
 
-
-
-    
 @app.route('/product/login/<int:p_id>',methods=["get"])
 def product_login(p_id):
     
@@ -104,11 +97,12 @@ def product_detail(p_id):
     p_username = product[0]
     username = session.get("userID")
     isfollow = DB.search_follow(username, p_username)
+    isNotShow = (p_username == username)
     # return str(isfollow)
     
     if "userID" in session:
         p_images = DB.show_image(p_id)
-        return render_template('Product.html',result=product, username = session.get("userID"), login = True, images = p_images,isfollow = isfollow)
+        return render_template('Product.html',result=product, username = session.get("userID"), login = True, images = p_images,isfollow = isfollow, isNotShow = isNotShow)
     else:
         return render_template('Product.html',result=product, login = False)
 
@@ -146,10 +140,7 @@ def uploader():
     P_desc = request.form['p_descript']
         
     P_soldout = request.form["isSoldOption"]
-    
 
-
-            
     pid = DB.upload_info(username, P_name, P_price, P_keyword, P_desc, P_soldout)
         
     # return pid
@@ -172,8 +163,6 @@ def modifing(p_id):
             
 @app.route('/modify/<int:p_id>')
 def modify(p_id):
-    
-
     p_five = DB.search_product(p_id)
     app.logger.info(p_five)
     user = DB.user_certificate(p_id)
@@ -228,12 +217,10 @@ def following():
     username = session.get("userID")
     pid = request.args.get("p_id")
     if follow == username:
-        flash("본인은 follow할 수 없습니다.")
         return redirect(url_for('product_detail',p_id = pid))
         
     else:
         DB.insert_follow(username,follow)
-        flash("follow가 완료되었습니다.")
         return redirect(url_for('product_detail',p_id = pid))
     
 @app.route('/unfollowing')
@@ -246,6 +233,22 @@ def unfollowing():
     
     
     
+
+@app.route('/search', methods=["get"])
+def search():
+    _keyword_ = request.args.get("Search_input")
+
+    if _keyword_ == "":
+        flash("검색어를 입력해주세요")
+        return redirect(url_for("index"))
+
+    Search_list = DB.search_item(_keyword_)
+    print(Search_list)
+
+    if "userID" in session:
+        return render_template('index.html',username = session.get("userID"), login = True, result = Search_list)
+    else:
+        return render_template('index.html',login = False, result = Search_list)
 
   
  
