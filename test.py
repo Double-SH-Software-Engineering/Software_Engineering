@@ -9,16 +9,13 @@ DB = pymysql.connect(
             db='SEDB',
             charset='utf8'
 )
-username = "1 23"
-follower ="1234"
+username = "1234"
 
 cursors = DB.cursor()
-sql = "select exists(select * from follow where user_ID = %s and followee = %s)"
-cursors.execute(sql,(username,follower))
-s = cursors.fetchall()
-s= s[0][0]
-print(s)
+
+sql = "select followee from follow where user_ID = %s"
+cursors.execute(sql,username)
+list_follow = cursors.fetchall()
 
 
-
-
+print(list_follow[1][0])

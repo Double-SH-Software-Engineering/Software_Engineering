@@ -10,12 +10,15 @@ DB = Database()
 app = Flask(__name__)
 app.secret_key = "shinheejun"
 
-
 @app.route('/',methods=["get"])
 def index():
     item = DB.product_list()
+    
     if "userID" in session:
-        return render_template('index.html',username = session.get("userID"), login = True, result = item)
+        username = session.get("userID")
+        follow_list = DB.list_follow(username)
+        
+        return render_template('index.html',username = session.get("userID"), login = True, result = item,follow_list = follow_list)
     else:
         return render_template('index.html',login = False, result = item)
 
@@ -33,6 +36,7 @@ def login():
     if cond :
         print(_id_,_pw_)
         session["userID"] = _id_
+
         return redirect(url_for("index"))
     else:
         flash("계정이 없거나 비밀번호가 틀립니다")
@@ -95,16 +99,19 @@ def product_detail(p_id):
     
     product = DB.product_detail(p_id)
     p_username = product[0]
-    username = session.get("userID")
-    isfollow = DB.search_follow(username, p_username)
-    isNotShow = (p_username == username)
+    p_images = DB.show_image(p_id)
     # return str(isfollow)
     
     if "userID" in session:
-        p_images = DB.show_image(p_id)
-        return render_template('Product.html',result=product, username = session.get("userID"), login = True, images = p_images,isfollow = isfollow, isNotShow = isNotShow)
+        username = session.get("userID")
+        isfollow = DB.search_follow(username, p_username)
+        # 본인이면 안나옴
+        isNotShow = (p_username == username)
+        follow_list = DB.list_follow(username)
+        
+        return render_template('Product.html',result=product, username = session.get("userID"), login = True, images = p_images,isfollow = isfollow, isNotShow = isNotShow,follow_list=follow_list)
     else:
-        return render_template('Product.html',result=product, login = False)
+        return render_template('Product.html',result=product, images = p_images, login = False)
 
 @app.route('/profile')
 def profile():
@@ -112,10 +119,12 @@ def profile():
         username = session.get("userID")
         user_item = DB.profile_item(username)
         pro_item = []
+
+        follow_list = DB.list_follow(username)
         for i in user_item:
             pro_item.append(i[:-1])
 
-        return render_template('profile.html', login = True, result = pro_item, username = session.get("userID"))
+        return render_template('profile.html', login = True, result = pro_item, username = session.get("userID"),follow_list=follow_list)
     
     else:
         flash("로그인을 먼저해주세요")
@@ -125,7 +134,9 @@ def profile():
 def upload():
     if "userID" in session:
         username = session.get("userID") 
-        return render_template('upload.html', login = True, username = session.get("userID"))
+
+        follow_list = DB.list_follow(username)
+        return render_template('upload.html', login = True, username = session.get("userID"),follow_list=follow_list)
     else:
         flash("로그인을 먼저해주세요")
         return redirect(url_for("index"))
@@ -168,7 +179,9 @@ def modify(p_id):
     user = DB.user_certificate(p_id)
     if "userID" in session:
         if session.get("userID") == user:
-            return render_template('modify.html',result=p_five, username = session.get("userID"), login = True)
+            username = session.get("userID")
+            follow_list = DB.list_follow(username)
+            return render_template('modify.html',result=p_five, username = session.get("userID"), login = True,follow_list=follow_list)
         else:
             return redirect(url_for("index"))
     else:
@@ -246,7 +259,11 @@ def search():
     print(Search_list)
 
     if "userID" in session:
-        return render_template('index.html',username = session.get("userID"), login = True, result = Search_list)
+        username = session.get("userID")
+        follow_list = DB.list_follow(username)
+        
+        
+        return render_template('index.html',username = session.get("userID"), login = True, result = Search_list,follow_list=follow_list)
     else:
         return render_template('index.html',login = False, result = Search_list)
 

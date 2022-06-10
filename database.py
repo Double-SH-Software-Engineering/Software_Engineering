@@ -195,6 +195,13 @@ class Database:
         cursors.fetchall()
         self.db.commit()
         
+    def list_follow(self,username):
+        cursors = self.db.cursor()
+        sql = "select followee from follow where user_ID = %s"
+        cursors.execute(sql,username)
+        list_follow = cursors.fetchall()
+        return list_follow
+        
     
 
         
