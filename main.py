@@ -23,10 +23,10 @@ def index():
         return render_template('index.html',login = False, result = item)
 
 
-@app.route('/login', methods=["get"])
+@app.route('/login', methods=["post"])
 def login():
-    _id_ = request.args.get("loginId")
-    _pw_ = request.args.get("loginPw")
+    _id_ = request.form["loginId"]
+    _pw_ = request.form["loginPw"]
 
     if _id_=="":
         flash("계정을 입력해주세요")
@@ -53,11 +53,11 @@ def logout():
 def signup():
     return render_template('signup.html')
 
-@app.route('/signup_submit',methods=["get"])
+@app.route('/signup_submit',methods=["post"])
 def signup_submit():
-    new_id = request.args.get("newId")
-    new_pw = request.args.get("newPw")
-    con_pw = request.args.get("confirmPw")
+    new_id = request.form["newId"]
+    new_pw = request.form["newPw"]
+    con_pw = request.form["confirmPw"]
 
     if new_pw != con_pw:
         flash("비밀번호를 재확인 바랍니다")

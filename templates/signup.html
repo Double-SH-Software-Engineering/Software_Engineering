@@ -15,7 +15,7 @@
             </script>
         {%endif%}
     {%endwith%}
-    <form method="get" id="signup" action="{{url_for('signup_submit')}}">
+    <form method="post" id="signup" action="{{url_for('signup_submit')}}">
         <div class="form-group">
             <label for="newId">Email address</label>
                 <input type="text" class="form-control" id="newId" name = "newId" aria-describedby="emailHelp">

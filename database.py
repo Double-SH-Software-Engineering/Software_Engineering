@@ -8,7 +8,7 @@ class Database:
             host='localhost',
             port=3306,
             user='root',
-            password='!9535010a',
+            password='-',
             db='SEDB',
             charset='utf8'
         )
