@@ -61,13 +61,13 @@
                       <form action ="http://127.0.0.1:5001/unfollowing">
                         <input type="text" name="follow" style="display:none;" value = "{{result[0]}}"/>
                         <input type="text" name="p_id" style="display:none;" value = "{{result[1]}}"/>
-                        <input type="submit" value = "Following" class="btn btn-light" style="background:#A0A0F0;"/>
+                        <input type="submit" value = "Following" class="btn btn-light" style="background:#A0A0F0;width:100px;"/>
                       </form>
                     {% else %}
                       <form action="http://127.0.0.1:5001/following">
                         <input type="text" name="follow" style="display:none;" value = "{{result[0]}}"/>
                         <input type="text" name="p_id" style="display:none;" value = "{{result[1]}}"/>
-                        <input type="submit" value = "Follow" class="btn btn-light" style="background:#FFD18D;"/>
+                        <input type="submit" value = "Follow" class="btn btn-light" style="background:#FFD18D;width:100px;"/>
                       </form>
                     {% endif %}
 
