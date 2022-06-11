@@ -39,20 +39,3 @@ desc customer;
 desc product;
 desc follow;
 desc product_image;
-
-insert into customer values ("suhwan", "12345678");
-insert into customer values ("heejun", "12345678");
-insert into customer values ("donggeun", "12345678");
-
-insert into product values("heejun",1,"야구공",5000,"22-05-13","스포츠 용품","야구공입니다.",0);
-insert into product values("heejun",2,"축구공",5000,"22-05-13","스포츠 용품","축구공입니다.",0);
-insert into product values("donggeun",3,"농구공",5000,"22-05-13","스포츠 용품","농구공입니다.",0);
-
-insert into follow values("suhwan", "heejun");
-insert into follow values("heejun", "donggeun");
-
-select * from customer;
-select * from product;
-
-insert into product values("suhwan",4,"무선마우스",5000,"22-05-16","전자용품","무선 마우스입니다.",1);
-select * from product;

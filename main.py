@@ -146,7 +146,6 @@ def uploader():
 
     pid = DB.upload_info(username, P_name, P_price, P_keyword, P_desc, P_soldout)
         
-    # return pid
     files = request.files.getlist('file[]')
     if files[0].filename == '':
         fileURI = '/static/img/default_image.png'
@@ -166,7 +165,6 @@ def modifing(p_id):
 @app.route('/modify/<int:p_id>')
 def modify(p_id):
     p_five = DB.search_product(p_id)
-    app.logger.info(p_five)
     user = DB.user_certificate(p_id)
     if "userID" in session:
         if session.get("userID") == user:
@@ -179,16 +177,18 @@ def modify(p_id):
         return redirect(url_for("index"))
     
     
-@app.route('/modifier/<int:p_id>/',methods=['GET','POST'])
-def modifier(p_id):
+@app.route('/modifier',methods=['POST'])
+def modifier():
+    
     username = session.get("userID")  
+    p_id = request.form['p_id']
     P_name = request.form['p_name']
     P_price = request.form['p_price']
     P_keyword = request.form['p_keyword']
     P_desc = request.form['p_descript']
     soldoption = request.form["isSoldOption"]
     files = request.files.getlist('file[]')
-    app.logger.info(files)
+
 
     user = DB.user_certificate(p_id)
     if username == user:  
@@ -197,13 +197,16 @@ def modifier(p_id):
             return redirect(url_for('profile'))
         else:
             DB.delete_image(p_id)
-            
+            print("test1")
             for f in files:
+                
                 fileURI = './static/img/'+ secure_filename(f.filename)
                 f.save(fileURI)
+                print(fileURI)
                 DB.upload_url(p_id, fileURI[1:])
                 
             DB.modify_product(p_id,P_name,P_price,P_keyword,P_desc,soldoption)  
+            
             return redirect(url_for('profile'))
     else:
         return redirect(url_for('profile'))    
