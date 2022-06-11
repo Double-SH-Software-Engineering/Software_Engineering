@@ -222,10 +222,13 @@ def following():
     
 @app.route('/unfollowing')
 def unfollowing():
-    follow = request.args.get('follow')
-    username = session.get("userID")
+    flash("이미 follow한 계정입니다.")
     pid = request.args.get("p_id")
-    DB.delete_follow(username,follow)
+    # unfollow 기능
+    # follow = request.args.get('follow')
+    # username = session.get("userID")
+    
+    # DB.delete_follow(username,follow)
     return redirect(url_for('product_detail',p_id = pid))
 
 @app.route('/followitem/<userID>', methods = ["get"])
