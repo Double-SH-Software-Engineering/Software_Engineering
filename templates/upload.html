@@ -8,6 +8,13 @@
    margin-right: auto;
    margin-top: 50px;
    position: relative">
+   {%with messages = get_flashed_messages()%}
+   {%if messages %}
+     <script type="text/javascript">
+       alert("{{messages[-1]}}");
+     </script>
+     {%endif%}
+   {%endwith%}
     <div class="index_mid_left" style="width: 60%; position: absolute; top:0; left:0;">
         <div class="container" style="margin-bottom:20px; display: flex; justify-content: space-between;align-items: center;">
             <h3>상품등록 및 수정</h1>
