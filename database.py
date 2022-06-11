@@ -8,7 +8,7 @@ class Database:
             host='localhost',
             port=3306,
             user='root',
-            password='-',
+            password='!9535010a',
             db='SEDB',
             charset='utf8'
         )
@@ -214,6 +214,15 @@ class Database:
         cursors.execute(sql,username)
         list_follow = cursors.fetchall()
         return list_follow
+    
+    def select_id(self, username):
+        cursors = self.db.cursor()
+        sql = "select exists (select * from customer where user_ID = %s)"
+        cursors.execute(sql,username)
+        isexistID = cursors.fetchall()
+        isexistID = isexistID[0][0]
+        return isexistID
+        
         
     
 

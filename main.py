@@ -54,6 +54,13 @@ def signup_submit():
     new_id = request.form["newId"]
     new_pw = request.form["newPw"]
     con_pw = request.form["confirmPw"]
+    
+    isexist = DB.select_id(new_id)
+    
+    if isexist:
+        flash("이미 존재하는 계정입니다.")
+        return redirect(url_for("signup"))
+    
 
     if new_pw != con_pw:
         flash("비밀번호를 재확인 바랍니다")
@@ -143,7 +150,13 @@ def uploader():
     P_desc = request.form['p_descript']
         
     P_soldout = request.form["isSoldOption"]
-
+    if P_name == "":
+        flash("상품 이름이 없습니다.")
+        return redirect(url_for('upload'))
+    elif P_price == "":
+        flash("상품 가격이 없습니다.")
+        return redirect(url_for('upload'))
+        
     pid = DB.upload_info(username, P_name, P_price, P_keyword, P_desc, P_soldout)
         
     files = request.files.getlist('file[]')
@@ -217,10 +230,14 @@ def following():
     follow = request.args.get('follow')
     username = session.get("userID")
     pid = request.args.get("p_id")
-    if follow == username:
-        return redirect(url_for('product_detail',p_id = pid))
+    if "userID" in session:
+        if follow == username:
+            return redirect(url_for('product_detail',p_id = pid))
+        else:
+            DB.insert_follow(username,follow)
+            return redirect(url_for('product_detail',p_id = pid))
     else:
-        DB.insert_follow(username,follow)
+        flash("로그인을 먼저해주세요")
         return redirect(url_for('product_detail',p_id = pid))
     
 @app.route('/unfollowing')
