@@ -1,9 +1,6 @@
-from distutils import file_util
 from flask import Flask, session, render_template, redirect, request, url_for, flash
-from datetime import datetime
 from database import Database
 from werkzeug.utils import secure_filename
-import os
 
 DB = Database()
 
@@ -34,7 +31,6 @@ def login():
 
     cond = DB.login(_id_,_pw_)
     if cond :
-        print(_id_,_pw_)
         session["userID"] = _id_
 
         return redirect(url_for("index"))
@@ -79,14 +75,12 @@ def product_login(p_id):
     
     _id_ = request.args.get("loginId")
     _pw_ = request.args.get("loginPw")
-    print(_id_,_pw_)
     if _id_=="":
         flash("계정을 입력해주세요")
         return redirect("/product/" + str(p_id))
 
     cond = DB.login(_id_,_pw_)
     if cond :
-        print(_id_,_pw_)
         session["userID"] = _id_
         return redirect("/product/" + str(p_id))
     else:
@@ -100,7 +94,6 @@ def product_detail(p_id):
     product = DB.product_detail(p_id)
     p_username = product[0]
     p_images = DB.show_image(p_id)
-    # return str(isfollow)
     
     if "userID" in session:
         username = session.get("userID")
@@ -125,7 +118,6 @@ def profile():
             pro_item.append(i[:-1])
 
         return render_template('profile.html', login = True, result = pro_item, username = session.get("userID"),follow_list=follow_list)
-    
     else:
         flash("로그인을 먼저해주세요")
         return redirect(url_for("index"))
@@ -165,7 +157,6 @@ def uploader():
             f.save(fileURI)
             DB.upload_url(pid, fileURI[1:])
     
-    
     return redirect(url_for("profile"))
 
 @app.route('/modifing/<int:p_id>')
@@ -190,7 +181,6 @@ def modify(p_id):
     
 @app.route('/modifier/<int:p_id>/',methods=['GET','POST'])
 def modifier(p_id):
-  
     username = session.get("userID")  
     P_name = request.form['p_name']
     P_price = request.form['p_price']
@@ -203,11 +193,8 @@ def modifier(p_id):
     user = DB.user_certificate(p_id)
     if username == user:  
         if files[0].filename == '':
-            
             DB.modify_product(p_id,P_name,P_price,P_keyword,P_desc,soldoption)  
             return redirect(url_for('profile'))
-        
-            
         else:
             DB.delete_image(p_id)
             
@@ -218,8 +205,6 @@ def modifier(p_id):
                 
             DB.modify_product(p_id,P_name,P_price,P_keyword,P_desc,soldoption)  
             return redirect(url_for('profile'))
-            
-    
     else:
         return redirect(url_for('profile'))    
     
@@ -231,7 +216,6 @@ def following():
     pid = request.args.get("p_id")
     if follow == username:
         return redirect(url_for('product_detail',p_id = pid))
-        
     else:
         DB.insert_follow(username,follow)
         return redirect(url_for('product_detail',p_id = pid))
@@ -243,18 +227,15 @@ def unfollowing():
     pid = request.args.get("p_id")
     DB.delete_follow(username,follow)
     return redirect(url_for('product_detail',p_id = pid))
-    
-    
-    
+
 @app.route('/followitem/<userID>', methods = ["get"])
 def follow_item(userID):
     if "userID" in session:
         username = session.get("userID")
         follow_list = DB.list_follow(username)
-        
         Search_list = DB.search_byfollow(userID)
+
         return render_template('index.html',username = session.get("userID"), login = True, result = Search_list,follow_list=follow_list)
-        
     else:    
         return redirect(url_for('index'))
 
@@ -267,19 +248,14 @@ def search():
         return redirect(url_for("index"))
 
     Search_list = DB.search_item(_keyword_)
-    print(Search_list)
 
     if "userID" in session:
         username = session.get("userID")
         follow_list = DB.list_follow(username)
-        
-        
         return render_template('index.html',username = session.get("userID"), login = True, result = Search_list,follow_list=follow_list)
     else:
         return render_template('index.html',login = False, result = Search_list)
 
-  
- 
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5001, debug=True)
     
